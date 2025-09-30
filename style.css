@@ -136,6 +136,34 @@ code {
     color: #d63384;
 }
 
+pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+pre code {
+    background: transparent;
+    color: #f8f8f2;
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+ol li {
+    margin-bottom: 0.75rem;
+}
+
 /* Link styles */
 a {
     color: #667eea;
