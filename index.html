@@ -19,6 +19,7 @@
                     <li><a href="#scaling">Scaling</a></li>
                     <li><a href="#security">Security</a></li>
                     <li><a href="#starter-kits">Starter Kits</a></li>
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
                 </ul>
             </nav>
         </div>
@@ -28,7 +29,7 @@
         <section id="overview">
             <h1>Self-hosting n8n</h1>
             <p>This section provides guidance on setting up n8n for both the Enterprise and Community self-hosted editions. The Community edition is free, the Enterprise edition isn't.</p>
-            <p>See <a href="#features">Community edition features</a> for a list of available features.</p>
+            <p><strong>⚠️ Important:</strong> This GitHub Pages site hosts <strong>documentation only</strong>. To actually run n8n, you need a server with Node.js or Docker. GitHub Pages cannot host backend applications.</p>
         </section>
 
         <section id="installation">
@@ -36,12 +37,86 @@
             <p>Install n8n on any platform using npm or Docker. Or follow our guides to popular hosting platforms.</p>
 
             <div class="card">
-                <h3>Quick Installation Options</h3>
+                <h3>Quick Start - Local Testing</h3>
+                <p>Try n8n locally on your computer first:</p>
                 <ul>
-                    <li><strong>npm:</strong> <code>npm install n8n -g</code></li>
-                    <li><strong>Docker:</strong> <code>docker run -it --rm --name n8n -p 5678:5678 n8nio/n8n</code></li>
-                    <li><strong>npx:</strong> <code>npx n8n</code></li>
+                    <li><strong>Using npx (easiest):</strong> <code>npx n8n</code></li>
+                    <li><strong>Using npm:</strong> <code>npm install n8n -g && n8n</code></li>
+                    <li><strong>Using Docker:</strong> <code>docker run -it --rm --name n8n -p 5678:5678 -v ~/.n8n:/home/node/.n8n n8nio/n8n</code></li>
                 </ul>
+                <p>After starting, open <code>http://localhost:5678</code> in your browser.</p>
+            </div>
+
+            <div class="card">
+                <h3>Production Hosting Platforms</h3>
+                <p>For production use, host n8n on a cloud platform:</p>
+                <ul>
+                    <li><strong>DigitalOcean:</strong> One-click n8n droplet available</li>
+                    <li><strong>Railway:</strong> Deploy with git integration</li>
+                    <li><strong>AWS EC2:</strong> Full control, requires setup</li>
+                    <li><strong>Heroku:</strong> Quick deployment with add-ons</li>
+                    <li><strong>Google Cloud Run:</strong> Serverless container hosting</li>
+                    <li><strong>Azure:</strong> Container instances or App Service</li>
+                </ul>
+            </div>
+
+            <div class="card highlight">
+                <h3>Docker Production Setup (Recommended)</h3>
+                <p>Create a <code>docker-compose.yml</code> file:</p>
+                <pre><code>version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=yourdomain.com
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://yourdomain.com/
+      - GENERIC_TIMEZONE=America/New_York
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:</code></pre>
+                <p>Then run: <code>docker-compose up -d</code></p>
+            </div>
+
+            <div class="card">
+                <h3>Step-by-Step: Deploy to DigitalOcean</h3>
+                <ol>
+                    <li>Create a DigitalOcean account</li>
+                    <li>Create a new Droplet (Ubuntu 22.04 LTS, minimum $6/month)</li>
+                    <li>SSH into your droplet: <code>ssh root@your-droplet-ip</code></li>
+                    <li>Install Docker: <code>curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh</code></li>
+                    <li>Install Docker Compose: <code>apt install docker-compose -y</code></li>
+                    <li>Create the docker-compose.yml file (see above)</li>
+                    <li>Start n8n: <code>docker-compose up -d</code></li>
+                    <li>Configure firewall: <code>ufw allow 5678 && ufw enable</code></li>
+                    <li>Access n8n at <code>http://your-droplet-ip:5678</code></li>
+                    <li>Set up SSL with Caddy or Nginx (see Security section)</li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>Step-by-Step: Deploy to Railway</h3>
+                <ol>
+                    <li>Create a <a href="https://railway.app" target="_blank">Railway</a> account</li>
+                    <li>Click "New Project" → "Deploy from Docker Image"</li>
+                    <li>Use image: <code>n8nio/n8n:latest</code></li>
+                    <li>Add environment variables:
+                        <ul>
+                            <li><code>N8N_PORT=5678</code></li>
+                            <li><code>N8N_PROTOCOL=https</code></li>
+                            <li><code>WEBHOOK_URL=https://your-app.railway.app/</code></li>
+                        </ul>
+                    </li>
+                    <li>Add a volume: <code>/home/node/.n8n</code></li>
+                    <li>Deploy and wait for the URL to be generated</li>
+                </ol>
             </div>
         </section>
 
@@ -50,13 +125,80 @@
             <p>Learn how to configure n8n with environment variables.</p>
 
             <div class="card">
-                <h3>Key Environment Variables</h3>
+                <h3>Essential Environment Variables</h3>
                 <ul>
-                    <li><code>N8N_HOST</code> - The host on which n8n should be reachable</li>
-                    <li><code>N8N_PORT</code> - The port n8n should run on</li>
-                    <li><code>N8N_PROTOCOL</code> - The protocol that n8n can be reached with</li>
-                    <li><code>WEBHOOK_URL</code> - The URL for webhook calls</li>
+                    <li><code>N8N_HOST</code> - The host on which n8n should be reachable (e.g., <code>n8n.yourdomain.com</code>)</li>
+                    <li><code>N8N_PORT</code> - The port n8n should run on (default: <code>5678</code>)</li>
+                    <li><code>N8N_PROTOCOL</code> - The protocol: <code>http</code> or <code>https</code> (use https in production)</li>
+                    <li><code>WEBHOOK_URL</code> - The URL for webhook calls (e.g., <code>https://n8n.yourdomain.com/</code>)</li>
+                    <li><code>GENERIC_TIMEZONE</code> - Your timezone (e.g., <code>America/New_York</code>, <code>Europe/London</code>)</li>
+                    <li><code>NODE_ENV</code> - Set to <code>production</code> for production deployments</li>
                 </ul>
+            </div>
+
+            <div class="card">
+                <h3>Database Configuration (PostgreSQL)</h3>
+                <p>For production, use PostgreSQL instead of SQLite:</p>
+                <ul>
+                    <li><code>DB_TYPE=postgresdb</code></li>
+                    <li><code>DB_POSTGRESDB_HOST=localhost</code></li>
+                    <li><code>DB_POSTGRESDB_PORT=5432</code></li>
+                    <li><code>DB_POSTGRESDB_DATABASE=n8n</code></li>
+                    <li><code>DB_POSTGRESDB_USER=n8n</code></li>
+                    <li><code>DB_POSTGRESDB_PASSWORD=your_secure_password</code></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Authentication Configuration</h3>
+                <ul>
+                    <li><code>N8N_BASIC_AUTH_ACTIVE=true</code> - Enable basic auth</li>
+                    <li><code>N8N_BASIC_AUTH_USER=admin</code> - Admin username</li>
+                    <li><code>N8N_BASIC_AUTH_PASSWORD=secure_password</code> - Admin password</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Complete docker-compose.yml Example</h3>
+                <pre><code>version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n_password
+      - POSTGRES_DB=n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  n8n:
+    image: n8nio/n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n_password
+      - N8N_HOST=yourdomain.com
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://yourdomain.com/
+      - GENERIC_TIMEZONE=America/New_York
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  n8n_data:</code></pre>
             </div>
         </section>
 
@@ -94,15 +236,71 @@
             <h2>Securing n8n</h2>
             <p>Secure your n8n instance by setting up SSL, SSO, or 2FA or blocking or opting out of some data collection or features.</p>
 
+            <div class="card highlight">
+                <h3>SSL/TLS Setup with Caddy (Easiest)</h3>
+                <p>Create a <code>Caddyfile</code>:</p>
+                <pre><code>n8n.yourdomain.com {
+    reverse_proxy localhost:5678
+}</code></pre>
+                <p>Run Caddy: <code>docker run -d -p 80:80 -p 443:443 -v $PWD/Caddyfile:/etc/caddy/Caddyfile caddy:latest</code></p>
+                <p>Caddy automatically handles SSL certificates via Let's Encrypt!</p>
+            </div>
+
+            <div class="card">
+                <h3>SSL/TLS Setup with Nginx</h3>
+                <p>1. Install Certbot: <code>apt install certbot python3-certbot-nginx</code></p>
+                <p>2. Get SSL certificate: <code>certbot --nginx -d n8n.yourdomain.com</code></p>
+                <p>3. Configure Nginx (<code>/etc/nginx/sites-available/n8n</code>):</p>
+                <pre><code>server {
+    listen 80;
+    server_name n8n.yourdomain.com;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name n8n.yourdomain.com;
+
+    ssl_certificate /etc/letsencrypt/live/n8n.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/n8n.yourdomain.com/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:5678;
+        proxy_set_header Connection '';
+        proxy_http_version 1.1;
+        chunked_transfer_encoding off;
+        proxy_buffering off;
+        proxy_cache off;
+    }
+}</code></pre>
+            </div>
+
             <div class="card">
                 <h3>Security Features</h3>
                 <ul>
-                    <li>SSL/TLS encryption</li>
-                    <li>Two-factor authentication (2FA)</li>
-                    <li>Single Sign-On (SSO)</li>
-                    <li>Data collection controls</li>
-                    <li>Network security configurations</li>
+                    <li><strong>SSL/TLS encryption:</strong> Always use HTTPS in production</li>
+                    <li><strong>Two-factor authentication (2FA):</strong> Enable in user settings</li>
+                    <li><strong>Single Sign-On (SSO):</strong> Available in Enterprise edition</li>
+                    <li><strong>Basic Authentication:</strong> Use environment variables to set credentials</li>
+                    <li><strong>Firewall Rules:</strong> Only expose necessary ports (80, 443)</li>
+                    <li><strong>Regular Updates:</strong> Keep n8n updated for security patches</li>
                 </ul>
+            </div>
+
+            <div class="card">
+                <h3>Firewall Configuration (UFW)</h3>
+                <pre><code># Allow SSH (be careful not to lock yourself out!)
+ufw allow 22
+
+# Allow HTTP and HTTPS
+ufw allow 80
+ufw allow 443
+
+# Enable firewall
+ufw enable
+
+# Check status
+ufw status</code></pre>
             </div>
         </section>
 
@@ -131,6 +329,69 @@
                 <li>Configuring n8n</li>
             </ul>
             <p><strong>Important:</strong> n8n recommends self-hosting for expert users. Mistakes can lead to data loss, security issues, and downtime. If you aren't experienced at managing servers, n8n recommends n8n Cloud.</p>
+        </section>
+
+        <section id="troubleshooting">
+            <h2>Troubleshooting Common Issues</h2>
+
+            <div class="card">
+                <h3>n8n Won't Start</h3>
+                <p><strong>Check logs:</strong></p>
+                <pre><code># Docker
+docker logs n8n
+
+# Docker Compose
+docker-compose logs n8n</code></pre>
+                <p><strong>Common fixes:</strong></p>
+                <ul>
+                    <li>Ensure port 5678 is not already in use</li>
+                    <li>Check file permissions for volumes</li>
+                    <li>Verify environment variables are correct</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Webhooks Not Working</h3>
+                <p><strong>Check:</strong></p>
+                <ul>
+                    <li>WEBHOOK_URL is set correctly</li>
+                    <li>Firewall allows incoming traffic</li>
+                    <li>SSL is properly configured if using HTTPS</li>
+                    <li>Domain DNS is pointing to your server</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Database Connection Errors</h3>
+                <p><strong>PostgreSQL troubleshooting:</strong></p>
+                <ul>
+                    <li>Verify database credentials in environment variables</li>
+                    <li>Ensure PostgreSQL container is running: <code>docker ps</code></li>
+                    <li>Check network connectivity between containers</li>
+                    <li>Test connection: <code>docker exec -it postgres psql -U n8n -d n8n</code></li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Performance Issues</h3>
+                <p><strong>Optimize for production:</strong></p>
+                <ul>
+                    <li>Use PostgreSQL instead of SQLite</li>
+                    <li>Enable queue mode for workflow execution</li>
+                    <li>Increase server resources (CPU, RAM)</li>
+                    <li>Monitor with tools like Grafana or Prometheus</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Getting Help</h3>
+                <ul>
+                    <li><strong>Official Documentation:</strong> <a href="https://docs.n8n.io" target="_blank">docs.n8n.io</a></li>
+                    <li><strong>Community Forum:</strong> <a href="https://community.n8n.io" target="_blank">community.n8n.io</a></li>
+                    <li><strong>GitHub Issues:</strong> <a href="https://github.com/n8n-io/n8n/issues" target="_blank">github.com/n8n-io/n8n</a></li>
+                    <li><strong>Discord:</strong> Join the n8n Discord server</li>
+                </ul>
+            </div>
         </section>
     </main>
 
