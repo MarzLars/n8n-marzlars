@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-hosting n8n | Documentation</title>
+    <meta name="description" content="This section provides guidance on setting up n8n for both the Enterprise and Community self-hosted editions.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>n8n Self-hosting Documentation</h1>
+            <nav>
+                <ul>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#configuration">Configuration</a></li>
+                    <li><a href="#authentication">Authentication</a></li>
+                    <li><a href="#scaling">Scaling</a></li>
+                    <li><a href="#security">Security</a></li>
+                    <li><a href="#starter-kits">Starter Kits</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="overview">
+            <h1>Self-hosting n8n</h1>
+            <p>This section provides guidance on setting up n8n for both the Enterprise and Community self-hosted editions. The Community edition is free, the Enterprise edition isn't.</p>
+            <p>See <a href="#features">Community edition features</a> for a list of available features.</p>
+        </section>
+
+        <section id="installation">
+            <h2>Installation and server setups</h2>
+            <p>Install n8n on any platform using npm or Docker. Or follow our guides to popular hosting platforms.</p>
+
+            <div class="card">
+                <h3>Quick Installation Options</h3>
+                <ul>
+                    <li><strong>npm:</strong> <code>npm install n8n -g</code></li>
+                    <li><strong>Docker:</strong> <code>docker run -it --rm --name n8n -p 5678:5678 n8nio/n8n</code></li>
+                    <li><strong>npx:</strong> <code>npx n8n</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="configuration">
+            <h2>Configuration</h2>
+            <p>Learn how to configure n8n with environment variables.</p>
+
+            <div class="card">
+                <h3>Key Environment Variables</h3>
+                <ul>
+                    <li><code>N8N_HOST</code> - The host on which n8n should be reachable</li>
+                    <li><code>N8N_PORT</code> - The port n8n should run on</li>
+                    <li><code>N8N_PROTOCOL</code> - The protocol that n8n can be reached with</li>
+                    <li><code>WEBHOOK_URL</code> - The URL for webhook calls</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="authentication">
+            <h2>Users and authentication</h2>
+            <p>Choose and set up user authentication for your n8n instance.</p>
+
+            <div class="card">
+                <h3>Authentication Methods</h3>
+                <ul>
+                    <li>Basic email/password authentication</li>
+                    <li>LDAP integration</li>
+                    <li>SAML SSO</li>
+                    <li>OAuth providers</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="scaling">
+            <h2>Scaling</h2>
+            <p>Manage data, modes, and processes to keep n8n running smoothly at scale.</p>
+
+            <div class="card">
+                <h3>Scaling Considerations</h3>
+                <ul>
+                    <li>Queue mode for workflow execution</li>
+                    <li>Database optimization</li>
+                    <li>Load balancing strategies</li>
+                    <li>Resource monitoring</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="security">
+            <h2>Securing n8n</h2>
+            <p>Secure your n8n instance by setting up SSL, SSO, or 2FA or blocking or opting out of some data collection or features.</p>
+
+            <div class="card">
+                <h3>Security Features</h3>
+                <ul>
+                    <li>SSL/TLS encryption</li>
+                    <li>Two-factor authentication (2FA)</li>
+                    <li>Single Sign-On (SSO)</li>
+                    <li>Data collection controls</li>
+                    <li>Network security configurations</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="starter-kits">
+            <h2>Starter kits</h2>
+            <p>New to n8n or AI? Try our Self-hosted AI Starter Kit. Curated by n8n, it combines the self-hosted n8n platform with compatible AI products and components to get you started building self-hosted AI workflows.</p>
+
+            <div class="card highlight">
+                <h3>AI Starter Kit Features</h3>
+                <ul>
+                    <li>Pre-configured AI workflows</li>
+                    <li>Compatible AI tools integration</li>
+                    <li>Step-by-step setup guides</li>
+                    <li>Community templates</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="prerequisites" class="warning">
+            <h2>Self-hosting knowledge prerequisites</h2>
+            <p>Self-hosting n8n requires technical knowledge, including:</p>
+            <ul>
+                <li>Setting up and configuring servers and containers</li>
+                <li>Managing application resources and scaling</li>
+                <li>Securing servers and applications</li>
+                <li>Configuring n8n</li>
+            </ul>
+            <p><strong>Important:</strong> n8n recommends self-hosting for expert users. Mistakes can lead to data loss, security issues, and downtime. If you aren't experienced at managing servers, n8n recommends n8n Cloud.</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 n8n.io. Documentation hosted on GitHub Pages.</p>
+            <p>Original content from <a href="https://docs.n8n.io/hosting/" target="_blank">n8n Documentation</a></p>
+        </div>
+    </footer>
+</body>
+</html>
